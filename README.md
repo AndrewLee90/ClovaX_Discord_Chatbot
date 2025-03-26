@@ -51,8 +51,7 @@ https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=274877
 ## 🧪 테스트 체크리스트
 - [x] 유저 입장 시 비공개 채널 생성됨  
 - [x] 채널에 유저 외 접근 불가 (관리자 접근 차단 확인)  
-- [x] `!아파` 명령어 정상 응답  
-- [ ] 하루 100회 제한 작동 (추가 구현 필요)  
+- [x] `!아파` 명령어 정상 응답   
 - [x] CLOVA API 키 정상 연결됨  
 
 ## 참고자료
