@@ -1,126 +1,63 @@
-# Discord 챗봇 with CLOVA API 연동
+# 💊 Medical_Advice_Bot
 
-이 프로젝트는 Python으로 작성된 디스코드 봇으로, CLOVA AI API와 연동하여 챗봇 기능을 제공합니다. 사용자는 이 봇을 통해 증상에 대한 의학적 조언을 받을 수 있으며, 서버에 초대되었을 때 자동으로 개인 채널을 생성할 수 있습니다.
+## 주요 기능
+- **신규 유저 입장 시 비공개 채널 자동 생성**: 서버에 입장한 신규 유저를 위해 본인만 볼 수 있는 비공개 상담 채널을 자동으로 생성합니다.
+- **!아파 명령어로 CLOVA 기반 상담 응답**: 사용자가 `!아파 증상`을 입력하면 CLOVA API를 통해 의학적 상담을 제공합니다.
+- **하루 최대 100회 상담 제한**: 사용자별로 하루 상담 횟수를 100회로 제한합니다 (현재 미구현, 추가 로직 필요).
+- **따뜻하고 공감 어린 의사 말투**: 감정에 기반한 친절하고 위로하는 응답을 제공합니다.
+- **관리자 접근 차단**: 생성된 채널은 완전한 개인 상담 공간으로, 관리자도 접근할 수 없습니다.
 
-## 기능
+## 🛠 설치 및 실행 방법
 
-- **프라이빗 채널 생성**: 봇이 새로운 서버에 초대되면 서버 소유자를 위해 자동으로 프라이빗 텍스트 채널을 생성합니다.
-- **CLOVA API 연동**: 사용자의 입력을 CLOVA AI API에 전달하여 의료 관련 조언을 생성합니다.
-- **봇 명령어**:
-  - `!아파`: 사용자의 증상을 입력받아 CLOVA API에 전달하고, 응답을 받아 사용자에게 전송합니다.
-  - `!프라이빗`: 사용자가 수동으로 서버에 프라이빗 채널을 생성할 수 있습니다.
+### 1. Python 패키지 설치
+필요한 Python 패키지를 설치하려면 터미널에서 다음 명령어를 실행하세요:  
+pip install discord aiohttp python-dotenv  
+- `discord`: 디스코드 봇 구현을 위한 패키지.  
+- `aiohttp`: CLOVA API 비동기 요청 처리.  
+- `python-dotenv`: 환경 변수 관리.
 
-## 사용된 기술
+### 2. `.env` 파일 생성 (최상단 디렉토리에 위치)
+프로젝트 최상단 디렉토리에 `.env` 파일을 만들고 다음 내용을 입력하세요:  
+DISCORD_TOKEN=디스코드_봇_토큰  
+CLOVA_SECRET=CLOVA_API_키  
+- `DISCORD_TOKEN`: 디스코드 개발자 포털에서 발급받은 봇 토큰.  
+- `CLOVA_SECRET`: CLOVA API 인증 키.
 
-- **Python**: 봇을 구축하는 데 사용된 주요 프로그래밍 언어.
-- **discord.py**: 디스코드 API와 상호작용하는 데 사용된 Python 라이브러리.
-- **CLOVA AI**: 사용자 입력을 처리하고 의료 조언을 생성하는 데 사용.
-- **aiohttp**: CLOVA API에 비동기 HTTP 요청을 보내는 데 사용된 라이브러리.
+### 3. 디스코드 봇 권한 설정
+- **Discord Developer Portal**: [https://discord.com/developers/applications](https://discord.com/developers/applications)  
+- **OAuth2 → URL Generator** 설정:  
+  - **Scopes**:  
+    - `bot`  
+    - `applications.commands`  
+  - **Bot Permissions**:  
+    - `Manage Channels`  
+    - `Send Messages`  
+    - `Read Message History`  
+    - `View Channels`  
+- 생성된 URL로 서버에 봇 초대:  
+https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=274877908992&scope=bot%20applications.commands
 
-## 설치 방법
+## ✅ 사용 방법
+- **새 유저가 서버에 입장하면?**  
+  - 자동으로 `private-닉네임` 형식의 비공개 채널이 생성됩니다.  
+- **유저가 상담 시작**  
+  - 예: `!아파 머리가 아파요`  
+  - 응답 예시:  
+    머리가 아프셨다니 정말 힘드셨겠어요. 혹시 스트레스나 수면 부족이 있으셨나요? 이런 증상은 신경과나 내과를 방문해 보시는 게 좋을 것 같아요. 정확한 진단은 병원에서 확인받아 보시고, 빨리 나으시길 바랄게요!
 
-1. 이 저장소를 클론합니다:
+## 🧠 사용 모델 정보
+- **모델**: CLOVA HCX-DASH-001  
+- **API 방식**: `aiohttp`를 통한 비동기 요청, CLOVA Studio API 사용.
 
-git clone https://github.com/yourusername/discord-chatbot-clova.git cd discord-chatbot-clova
+## 🧪 테스트 체크리스트
+- [x] 유저 입장 시 비공개 채널 생성됨  
+- [x] 채널에 유저 외 접근 불가 (관리자 접근 차단 확인)  
+- [x] `!아파` 명령어 정상 응답  
+- [ ] 하루 100회 제한 작동 (추가 구현 필요)  
+- [x] CLOVA API 키 정상 연결됨  
 
-markdown
-복사
-편집
-
-2. 필요한 라이브러리 설치:
-
-pip install -r requirements.txt
-
-markdown
-복사
-편집
-
-3. `.env` 파일에 디스코드 봇 토큰과 CLOVA API 정보를 추가합니다:
-
-DISCORD_TOKEN=your_discord_token CLOVA_URL=your_clova_api_url CLOVA_SECRET=your_clova_secret
-
-markdown
-복사
-편집
-
-4. 봇 실행:
-
-python bot.py
-
-markdown
-복사
-편집
-
-## 봇 명령어
-
-- **!아파**: 사용자가 증상을 입력하면 CLOVA API로부터 의학적 조언을 받습니다.
-- **!프라이빗**: 서버에서 프라이빗 채널을 생성할 수 있습니다.
-
-## 코드 설명
-
-### 1. 봇 초기화 및 설정
-
-디스코드 봇은 `discord.py` 라이브러리를 사용하여 생성되었습니다. 봇은 기본적으로 메시지 권한을 처리하고, `!` 접두사를 통해 명령어를 실행합니다.
-
-```python
-intents = discord.Intents.default()
-intents.messages = True
-intents.message_content = True
-intents.guilds = True
-bot = commands.Bot(command_prefix="!", intents=intents)
-2. CLOVA API 연동
-call_clova_chatbot 함수는 CLOVA API를 호출하여 사용자가 입력한 증상에 대한 의학적 조언을 받습니다. API 호출은 비동기적으로 처리됩니다.
-
-python
-복사
-편집
-async def call_clova_chatbot(user_input):
-    headers = {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'X-NCP-CLOVASTUDIO-REQUEST-ID': '',
-        'Authorization': f'Bearer {CLOVA_SECRET}'
-    }
-    ...
-3. 프라이빗 채널 생성
-서버에 봇이 초대되면 자동으로 서버 소유자에게만 접근 가능한 프라이빗 채널을 생성합니다.
-
-python
-복사
-편집
-@bot.event
-async def on_guild_join(guild):
-    try:
-        owner = guild.owner
-        overwrites = {
-            guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            owner: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-            bot.user: discord.PermissionOverwrite(read_messages=True, send_messages=True)
-        }
-        private_channel = await guild.create_text_channel(f"private-{owner.name}", overwrites=overwrites)
-        await private_channel.send(f"{owner.mention}님, 여기가 당신의 프라이빗 채널입니다!")
-    except discord.errors.Forbidden:
-        print("채널 생성 실패: '채널 관리' 권한 부족")
-4. 명령어 처리
-!아파 명령어는 사용자의 증상에 대한 응답을 CLOVA API로부터 받아 디스코드 채팅에 출력합니다.
-
-python
-복사
-편집
-@bot.command()
-async def 아파(ctx, *, user_input: str = None):
-    if user_input is None:
-        await ctx.send("증상이 무엇인지 알려주세요!")
-        return
-    clova_response = await call_clova_chatbot(user_input)
-    await ctx.send(clova_response)
-봇 준비 완료
-디스코드 봇이 로그인하면 on_ready 이벤트가 트리거되어 봇이 정상적으로 작동함을 알립니다.
-
-python
-복사
-편집
-@bot.event
-async def on_ready():
-    print(f'{bot.user.name} 봇이 로그인했습니다!')
-결론
-이 프로젝트는 CLOVA API를 활용하여 사용자의 증상에 대한 의료적 조언을 제공하는 디스코드 봇을 구현하는 예제입니다. 서버에 초대되면 자동으로 프라이빗 채널을 생성하여 사용자와의 비공개 대화를 제공합니다.
+## 참고자료
+- [Discord.py 공식 문서](https://discordpy.readthedocs.io/en/stable/)  
+- [CLOVA Studio API 가이드](https://www.ncloud.com/product/aiService/clovaStudio)  
+- [Velog: AI 챗봇 제작](https://velog.io/@chuu1019/AI-ChatGpt4-Discord-Bot-%EB%A7%8C%EB%93%A4%EA%B8%B0-feat.-python)  
+- Grok 3 (xAI)을 통한 코드 디버깅 및 프롬프트 최적화 (사용 비율 약 70%)
